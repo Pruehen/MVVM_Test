@@ -1,20 +1,19 @@
-using System.Collections;
-using System.Collections.Generic;
 using System.ComponentModel;
 using UnityEngine;
 using UnityEngine.UI;
+using ViewModel;
 using ViewModel.Extensions;
 
-public class SubProfileView : MonoBehaviour
+public class SubProfileView_IntgVM : MonoBehaviour
 {
     [SerializeField] Text Text_Name;
     [SerializeField] Text Text_Level;
 
-    private SubProfileViewModel _vm;
+    SubProfileViewModel _vm;
 
     private void OnEnable()
     {
-        if(_vm == null)
+        if (_vm == null)
         {
             _vm = new SubProfileViewModel();
             _vm.PropertyChanged += OnPropertyChanged;
@@ -22,10 +21,9 @@ public class SubProfileView : MonoBehaviour
             _vm.RefreshViewModel();
         }
     }
-
     private void OnDisable()
     {
-        if(_vm != null)
+        if (_vm != null)
         {
             _vm.UnRegisterOnDisable();
             _vm.PropertyChanged -= OnPropertyChanged;
@@ -43,6 +41,42 @@ public class SubProfileView : MonoBehaviour
             case nameof(_vm.Level):
                 Text_Level.text = $"레벨 : {_vm.Level}";
                 break;
+        }
+    }
+}
+public class SubProfileViewModel : ViewModelBase
+{
+    private int _userId;
+    private string _name;
+    private int _level;
+
+    public int UserId
+    {
+        get { return _userId; }
+        set { _userId = value; }
+    }
+    public string Name
+    {
+        get { return _name; }
+        set
+        {
+            if (_name == value)
+                return;
+
+            _name = value;
+            OnPropertyChanged(nameof(Name));
+        }
+    }
+    public int Level
+    {
+        get { return _level; }
+        set
+        {
+            if (_level == value)
+                return;
+
+            _level = value;
+            OnPropertyChanged(nameof(Level));
         }
     }
 }

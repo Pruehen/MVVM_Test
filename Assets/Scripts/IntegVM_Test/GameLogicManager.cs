@@ -11,7 +11,7 @@ public class Player
     }
 
     public int UserId { get; private set; }
-    public string Name { get; private set; }
+    public string Name { get; set; }
     public int Level { get; set; }
 }
 
@@ -22,6 +22,8 @@ public class GameLogicManager
 
     private static Dictionary<int, Player> _playerDic = new Dictionary<int, Player>();
     private Action<int, int> _levelUpCallback;
+    private Action<int, string> _changeNameCallback;
+
 
     public static GameLogicManager Inst
     {
@@ -43,25 +45,46 @@ public class GameLogicManager
         _playerDic.Add(3, new Player(3, "바밤바"));
     }
 
-    public void RegisterLevelUpCallback(Action<int, int> levelupCallback)
+    public void RegisterLevelUpCallback(Action<int, int> changeNameCallback)
     {
-        _levelUpCallback += levelupCallback;
+        _levelUpCallback += changeNameCallback;
     }
 
-    public void UnRegisterLevelUpCallback(Action<int, int> levelupCallback)
+    public void UnRegisterLevelUpCallback(Action<int, int> changeNameCallback)
     {
-        _levelUpCallback -= levelupCallback;
+        _levelUpCallback -= changeNameCallback;
     }
 
-    public void RequestLevelUp()
+    public void RequestLevelUp(int levelPlus = 1)
     {
         int reqUserId = _curSelectedPlayerId;
 
         if (_playerDic.ContainsKey(reqUserId))
         {
             var curPlayer = _playerDic[reqUserId];
-            curPlayer.Level++;
-            _levelUpCallback.Invoke(reqUserId, curPlayer.Level);
+            curPlayer.Level += levelPlus;
+            _levelUpCallback?.Invoke(reqUserId, curPlayer.Level);
+        }
+    }
+
+    public void RegisterChangeNameCallback(Action<int, string> changeNameCallback)
+    {
+        _changeNameCallback += changeNameCallback;
+    }
+
+    public void UnRegisterChangeNameCallback(Action<int, string> changeNameCallback)
+    {
+        _changeNameCallback -= changeNameCallback;
+    }
+    public void RequestChangeName(string newName)
+    {
+        int reqUserId = _curSelectedPlayerId;
+
+        if (_playerDic.ContainsKey(reqUserId))
+        {
+            var curPlayer = _playerDic[reqUserId];
+            curPlayer.Name = newName;
+            _changeNameCallback?.Invoke(reqUserId, curPlayer.Name);
         }
     }
 

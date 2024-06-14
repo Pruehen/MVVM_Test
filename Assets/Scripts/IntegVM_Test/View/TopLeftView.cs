@@ -3,48 +3,47 @@ using UnityEngine;
 using UnityEngine.UI;
 using ViewModel.Extensions;
 
-public class MainCharacterProfileView : MonoBehaviour
+public class TopLeftView : MonoBehaviour
 {
-    [SerializeField] Image Image_CharacterIcon;
-    [SerializeField] Text Text_CharacterName;
-    [SerializeField] Text Text_CharacterLevel;
+    [SerializeField] Text Text_Name;
+    [SerializeField] Text Text_Level;
+    [SerializeField] Image Image_Icon;
 
-    private MainCharacterProfileViewModel _vm;
+    //∫‰∏µ® º“¿Ø
+    GameLogicViewModel _vm;
 
     private void OnEnable()
     {
         if(_vm == null)
         {
-            _vm = new MainCharacterProfileViewModel();
+            _vm = new GameLogicViewModel();
             _vm.PropertyChanged += OnPropertyChanged;
             _vm.RegisterEventsOnEnable();
             _vm.RefreshViewModel();
         }
     }
-
     private void OnDisable()
     {
         if(_vm != null)
         {
-            _vm.UnRegisterOnDisable();
+            _vm.UnRegisterEventsOnDisable();
             _vm.PropertyChanged -= OnPropertyChanged;
             _vm = null;
         }
     }
 
-    private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
+    void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
     {
         switch (e.PropertyName)
         {
             case nameof(_vm.Name):
-                Text_CharacterName.text = $"Ïù¥Î¶Ñ : {_vm.Name}";
+                Text_Name.text = _vm.Name;
                 break;
             case nameof(_vm.Level):
-                Text_CharacterLevel.text = $"Î†àÎ≤® : {_vm.Level}";
+                Text_Level.text = $"{_vm.Level}";
                 break;
             case nameof(_vm.IconName):
                 break;
         }
     }
-
 }

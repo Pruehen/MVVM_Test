@@ -9,13 +9,13 @@ public class PlayerView : MonoBehaviour
     [SerializeField] Animator Animator_Player;
     [SerializeField] GameObject Prefab_SpecialLevelUp;
 
-    private PlayerViewModel _vm;
+    GameLogicViewModel _vm;
 
     private void OnEnable()
     {
         if (_vm == null)
         {
-            _vm = new PlayerViewModel();
+            _vm = new GameLogicViewModel();
             _vm.PropertyChanged += OnPropertyChanged;
             _vm.RegisterEventsOnEnable();
             _vm.RefreshViewModel();
@@ -26,7 +26,7 @@ public class PlayerView : MonoBehaviour
     {
         if (_vm != null)
         {
-            _vm.UnRegisterOnDisable();
+            _vm.UnRegisterEventsOnDisable();
             _vm.PropertyChanged -= OnPropertyChanged;
             _vm = null;
         }
